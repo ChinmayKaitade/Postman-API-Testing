@@ -1,0 +1,194 @@
+{
+	"info": {
+		"_postman_id": "b075cfee-0a90-4dea-9fea-d96b5fd31749",
+		"name": "Postman API Testing",
+		"description": "### _Learning advanced features of Postman, emphasizing its capabilities beyond basic requests, and encourages viewers to explore its full potential._",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33792038"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register User Random",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function getRandomRoles(){\r",
+									"    const roles = [\"ADMIN\", \"USER\"]\r",
+									"    return roles[Math.floor(Math.random() * roles.length)]\r",
+									"}\r",
+									"\r",
+									"function getRandomUsername(){\r",
+									"    const letters = \"abcdefghijklmopqrstuvwxyz\"\r",
+									"    let username = \"\"\r",
+									"    for (let i = 0; i < 8; i++){\r",
+									"        username += letters.charAt(Math.floor(Math.random() * letters.length))\r",
+									"    }\r",
+									"\r",
+									"    return username\r",
+									"}\r",
+									"\r",
+									"pm.environment.set(\"randomRole\", getRandomRoles())\r",
+									"pm.environment.set(\"randomUsername\", getRandomUsername())"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {",
+									"    pm.expect(pm.response.code).to.equal(201);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Data object is present in the response\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.data).to.exist;",
+									"});",
+									"",
+									"",
+									"pm.test(\"User object is present within the data object\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.have.property('data');",
+									"  pm.expect(responseData.data).to.have.property('user');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Email and username are non-empty strings\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data.user.email).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Email should not be empty\");",
+									"    pm.expect(responseData.data.user.username).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Username should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Avatar object contains url, localPath, and _id fields within the user object\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data.user.avatar).to.be.an('object');",
+									"    pm.expect(responseData.data.user.avatar.url).to.be.a('string');",
+									"    pm.expect(responseData.data.user.avatar.localPath).to.be.a('string');",
+									"    pm.expect(responseData.data.user.avatar._id).to.be.a('string');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"test@123\",\r\n  \"role\": \"{{randomRole}}\",\r\n  \"username\": \"{{randomUsername}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{freeapi}}/users/register",
+							"host": [
+								"{{freeapi}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						},
+						"description": "### Register User\n\nThis endpoint allows you to register a new user.\n\n#### Request Body\n\n- email (text, required): The email of the user.\n    \n- password (text, required): The password for the user account.\n    \n- role (text, required): The role of the user.\n    \n- username (text, required): The username of the user.\n    \n\n#### Response\n\nThe response will be a JSON object with the following schema:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"statusCode\": {\n      \"type\": \"number\"\n    },\n    \"data\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"user\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"_id\": {\n              \"type\": \"string\"\n            },\n            \"avatar\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"url\": {\n                  \"type\": \"string\"\n                },\n                \"localPath\": {\n                  \"type\": \"string\"\n                },\n                \"_id\": {\n                  \"type\": \"string\"\n                }\n              }\n            },\n            \"username\": {\n              \"type\": \"string\"\n            },\n            \"email\": {\n              \"type\": \"string\"\n            },\n            \"role\": {\n              \"type\": \"string\"\n            },\n            \"loginType\": {\n              \"type\": \"string\"\n            },\n            \"isEmailVerified\": {\n              \"type\": \"boolean\"\n            },\n            \"createdAt\": {\n              \"type\": \"string\"\n            },\n            \"updatedAt\": {\n              \"type\": \"string\"\n            },\n            \"__v\": {\n              \"type\": \"number\"\n            }\n          }\n        },\n        \"message\": {\n          \"type\": \"string\"\n        },\n        \"success\": {\n          \"type\": \"boolean\"\n        }\n      }\n    }\n  }\n}\n\n ```"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Public",
+			"item": [
+				{
+					"name": "Get Random Joke",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.expect(pm.response.to.have.status(200));",
+									"});",
+									"",
+									"",
+									"pm.test(\"Data object is present in the response\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.data).to.exist;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Categories array should be empty\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data.categories).to.be.an('array').that.is.empty;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Id is a non-negative number\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data.id).to.be.a('number').and.to.satisfy(id => id >= 0, \"Id should be a non-negative number\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data.content).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Content should not be empty\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{freeapi}}/public/randomjokes/joke/random",
+							"host": [
+								"{{freeapi}}"
+							],
+							"path": [
+								"public",
+								"randomjokes",
+								"joke",
+								"random"
+							]
+						},
+						"description": "### GET /public/randomjokes/joke/random\n\nThis endpoint retrieves a random joke from the public collection.\n\n#### Request Body\n\nThis endpoint does not require a request body.\n\n#### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n\n``` json\n{\n    \"statusCode\": 0,\n    \"data\": {\n        \"categories\": [],\n        \"id\": 0,\n        \"content\": \"\"\n    },\n    \"message\": \"\",\n    \"success\": true\n}\n\n ```\n\nThe response contains the following fields:\n\n- `statusCode` (number): The status code of the response.\n    \n- `data` (object): An object containing the joke details.\n    \n    - `categories` (array): An array of categories associated with the joke.\n        \n    - `id` (number): The ID of the joke.\n        \n    - `content` (string): The content of the joke.\n        \n- `message` (string): Any additional message from the server.\n    \n- `success` (boolean): Indicates if the request was successful."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "freeapi",
+			"value": "https://api.freeapi.app/api/v1"
+		}
+	]
+}
