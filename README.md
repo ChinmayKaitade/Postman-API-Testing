@@ -4,7 +4,9 @@
 
 Postman is a powerful tool for both **manual API testing** and **automating API workflows**, making it essential for developers to test, debug, and document APIs efficiently. Here's a combined overview of both API testing and automation in Postman:
 
-### Public APIs for Reference : `https://freeapi.app/`
+### Public APIs for Reference : https://freeapi.app/
+
+## [Click to Checkout API Collection Documentation](https://documenter.getpostman.com/view/33792038/2sAXqzWyFN)
 
 ---
 
